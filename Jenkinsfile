@@ -7,12 +7,22 @@ pipeline {
 environment {
     PATH = "/opt/maven/bin:$PATH"
 }
-    stages {
-        stage("build"){
+    stages { 
+        stage("Build"){
             steps {
                  echo "----------Building Maven----------"
                  sh 'mvn clean deploy'
             }
        }
-    } 
+        stage("SonarQube") {
+        environment {
+            scannerHome = tool 'sonarqube_scanner'
+        }
+        steps{
+        withSonarQubeEnv('sonarqube_server') {
+            sh "${scannerHome}/bin/sonar-scanner"
+            }
+        }
+        } 
+    }
 }
