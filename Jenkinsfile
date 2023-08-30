@@ -10,13 +10,13 @@ environment {
     stages { 
         stage("Build"){
             steps {
-                 echo "----------Build Maven Started----------"
+                 echo "---------------MAVEN BUILD STARTED---------------"
                  sh 'mvn clean deploy -Dmaven.test.skip=true'
             }
        }
         stage("Unit Test") {
            steps {
-                 echo "----------Unit Test Started----------"
+                 echo "-------------UNIT TEST STARTED---------------"
                  sh 'mvn surefire-report:report'
             }
         }
@@ -25,6 +25,7 @@ environment {
             scannerHome = tool 'sonarqube_scanner'
         }
             steps{
+                echo"---------------SONARQUBE STARTED---------------"
                 withSonarQubeEnv('sonarqube_server') {
                 sh "${scannerHome}/bin/sonar-scanner"
                 }
@@ -32,6 +33,7 @@ environment {
         } 
         stage("Quality Gate") {
             steps {
+                echo"---------------QUALITY GATE STARTED---------------"
                 script {
                     timeout(time: 1, unit: 'HOURS') {
                         def qg = waitForQualityGate()
